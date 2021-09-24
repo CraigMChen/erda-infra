@@ -18,8 +18,10 @@ import (
 	"context"
 	"encoding/json"
 	"reflect"
+	"time"
 
 	"github.com/erda-project/erda-infra/providers/component-protocol/cptype"
+	"github.com/sirupsen/logrus"
 )
 
 func wrapCompRender(cr CompRender, ver string) CompRender {
@@ -36,6 +38,7 @@ type compRenderWrapper struct {
 
 // Render .
 func (w *compRenderWrapper) Render(ctx context.Context, c *cptype.Component, scenario cptype.Scenario, event cptype.ComponentEvent, gs *cptype.GlobalStateData) (err error) {
+	logrus.Infof("[DEBUG] start wrapper for %s at %s", c.Name, time.Now().Format(time.StampNano))
 	if err = unmarshal(&w.cr, c); err != nil {
 		return
 	}
@@ -47,6 +50,7 @@ func (w *compRenderWrapper) Render(ctx context.Context, c *cptype.Component, sce
 		err = marshal(&w.cr, c)
 	}()
 	err = w.cr.Render(ctx, c, scenario, event, gs)
+	logrus.Infof("[DEBUG] end wrapper for %s at %s", c.Name, time.Now().Format(time.StampNano))
 	return
 }
 
