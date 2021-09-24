@@ -48,9 +48,9 @@ func (w *compRenderWrapper) Render(ctx context.Context, c *cptype.Component, sce
 			return
 		}
 		err = marshal(&w.cr, c)
+		logrus.Infof("[DEBUG] end wrapper for %s at %s", c.Name, time.Now().Format(time.StampNano))
 	}()
 	err = w.cr.Render(ctx, c, scenario, event, gs)
-	logrus.Infof("[DEBUG] end wrapper for %s at %s", c.Name, time.Now().Format(time.StampNano))
 	return
 }
 
