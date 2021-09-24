@@ -16,11 +16,13 @@ package componentprotocol
 
 import (
 	"context"
+	"time"
 
 	"github.com/erda-project/erda-infra/providers/component-protocol/cptype"
 	"github.com/erda-project/erda-infra/providers/component-protocol/protocol"
 	"github.com/erda-project/erda-infra/providers/component-protocol/utils/cputil"
 	"github.com/erda-project/erda-proto-go/cp/pb"
+	"github.com/sirupsen/logrus"
 )
 
 type protocolService struct {
@@ -74,9 +76,11 @@ func (s *protocolService) makeResponse(renderReq *cptype.ComponentProtocolReques
 
 	// render response
 	polishedPbReq := &pb.RenderRequest{}
+	logrus.Infof("[DEBUG] start obj json transfer at %s", time.Now().Format(time.StampNano))
 	if err := cputil.ObjJSONTransfer(renderReq, polishedPbReq); err != nil {
 		return nil, err
 	}
+	logrus.Infof("[DEBUG] end obj json transfer at %s", time.Now().Format(time.StampNano))
 	pbResp := pb.RenderResponse{
 		Scenario: polishedPbReq.Scenario,
 		Protocol: polishedPbReq.Protocol,
