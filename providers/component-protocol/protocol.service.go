@@ -31,13 +31,16 @@ type protocolService struct {
 
 // Render .
 func (s *protocolService) Render(ctx context.Context, req *pb.RenderRequest) (*pb.RenderResponse, error) {
+	logrus.Infof("[DEBUG] enter erda-infra render at %s", time.Now().Format(time.StampNano))
 	s.p.Log.Debugf("request header: %v", cputil.GetAllHeaders(ctx))
 
 	// transfer pb to ComponentProtocolRequest for easy use
+	logrus.Infof("[DEBUG] start obj json transfer for req at %s", time.Now().Format(time.StampNano))
 	renderReq := &cptype.ComponentProtocolRequest{}
 	if err := cputil.ObjJSONTransfer(req, renderReq); err != nil {
 		return nil, err
 	}
+	logrus.Infof("[DEBUG] end obj json transfer for req at %s", time.Now().Format(time.StampNano))
 
 	// make sdk
 	sdk := cptype.SDK{
@@ -61,6 +64,7 @@ func (s *protocolService) Render(ctx context.Context, req *pb.RenderRequest) (*p
 	// make response
 	resp, err := s.makeResponse(renderReq)
 
+	logrus.Infof("[DEBUG] quit erda-infra render at %s", time.Now().Format(time.StampNano))
 	return resp, err
 }
 
