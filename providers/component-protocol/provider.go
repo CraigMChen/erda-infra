@@ -17,6 +17,7 @@ package componentprotocol
 import (
 	"net/http"
 	"reflect"
+	"time"
 
 	"github.com/erda-project/erda-infra/base/logs"
 	"github.com/erda-project/erda-infra/base/servicehub"
@@ -26,6 +27,7 @@ import (
 	"github.com/erda-project/erda-infra/providers/i18n"
 	"github.com/erda-project/erda-proto-go/cp/pb"
 	jsi "github.com/json-iterator/go"
+	"github.com/sirupsen/logrus"
 )
 
 type config struct {
@@ -77,13 +79,17 @@ func (p *provider) Init(ctx servicehub.Context) error {
 						"ctx":  nil,
 					},
 				}
+				logrus.Infof("[DEBUG] start jsi marshal at %s", time.Now().Format(time.StampNano))
 				data, err := jsi.Marshal(resp)
+				logrus.Infof("[DEBUG] end jsi marshal at %s", time.Now().Format(time.StampNano))
 				if err != nil {
 					return err
 				}
+				logrus.Infof("[DEBUG] start write rw at %s", time.Now().Format(time.StampNano))
 				if _, err = rw.Write(data); err != nil {
 					return err
 				}
+				logrus.Infof("[DEBUG] end write rw at %s", time.Now().Format(time.StampNano))
 				return nil
 			}),
 		))
